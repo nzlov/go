@@ -61,6 +61,27 @@ func (this *FileMonitorObserver) Check() {
 
 	this.tempfileMap.Clear()
 
+	//判断是否有删除的文件或目录
+	for k, file := range this.fileMap {
+		if _, err := os.Stat(k); err != nil {
+			delete(this.fileMap, k)
+			for i := 0; i < this.fileListeners.Size(); i++ {
+				v, err := this.fileListeners.Get(i)
+				if err != nil {
+					continue
+				}
+				switch inst := v.(type) {
+				case FileMonitorListener:
+					if file.Directory() {
+						inst.DirectoryDelete(file)
+					} else {
+						inst.FileDelete(file)
+					}
+				}
+			}
+		}
+	}
+
 	filepath.Walk(this.rootEntry.Path(), func(path string, fi os.FileInfo, err error) error {
 		if nil == fi {
 			return err
@@ -138,28 +159,8 @@ func (this *FileMonitorObserver) Check() {
 		this.one = false
 	} else {
 
-		//判断是否有删除的文件或目录
-		for k, file := range this.fileMap {
-			if !this.tempfileMap.Contains(k) {
-				delete(this.fileMap, k)
-				for i := 0; i < this.fileListeners.Size(); i++ {
-					v, err := this.fileListeners.Get(i)
-					if err != nil {
-						continue
-					}
-					switch inst := v.(type) {
-					case FileMonitorListener:
-						if file.Directory() {
-							inst.DirectoryDelete(file)
-						} else {
-							inst.FileDelete(file)
-						}
-					}
-				}
-			}
-		}
-
 	}
+
 	for i := 0; i < this.fileListeners.Size(); i++ {
 		v, err := this.fileListeners.Get(i)
 		if err != nil {
