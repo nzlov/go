@@ -1,7 +1,7 @@
 package gllog
 
 import (
-	log "github.com/Sirupsen/logrus"
+	log "github.com/nzlov/glog"
 	"github.com/yuin/gopher-lua"
 )
 
