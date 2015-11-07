@@ -2,6 +2,7 @@ package array
 
 import (
 	"errors"
+	"fmt"
 	"sync"
 )
 
@@ -233,4 +234,8 @@ func (this *Array) First() (interface{}, error) {
 		return nil, errors.New("Array is empty.")
 	}
 	return this.Items[0], nil
+}
+
+func (this *Array) String() string {
+	return fmt.Sprint(this.Items)
 }

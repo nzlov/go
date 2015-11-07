@@ -1,15 +1,15 @@
 package filemonitor
 
 import (
-	"github.com/nzlov/go/utils"
+	"github.com/nzlov/go/array"
 	"os"
 	"path/filepath"
 )
 
 type FileMonitorObserver struct {
-	fileListeners *utils.Array
+	fileListeners *array.Array
 	fileMap       map[string]*FileEntry
-	tempfileMap   *utils.Array
+	tempfileMap   *array.Array
 	one           bool
 	rootEntry     *FileEntry
 	fileFileter   *FileFilter
@@ -30,9 +30,9 @@ func NewFileMonitorObserverByFileEntry(rootEntry *FileEntry) *FileMonitorObserve
 }
 func NewFileMonitorObserverByFileEntryAndFileFileter(rootEntry *FileEntry, fileter *FileFilter) *FileMonitorObserver {
 	observer := &FileMonitorObserver{
-		fileListeners: utils.NewArray(),
+		fileListeners: array.NewArray(),
 		fileMap:       make(map[string]*FileEntry),
-		tempfileMap:   utils.NewArray(),
+		tempfileMap:   array.NewArray(),
 		one:           true,
 		rootEntry:     rootEntry,
 		fileFileter:   fileter}

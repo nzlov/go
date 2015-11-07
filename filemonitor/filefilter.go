@@ -1,16 +1,16 @@
 package filemonitor
 
 import (
-	"github.com/nzlov/go/utils"
+	"github.com/nzlov/go/array"
 	"strings"
 )
 
 type FileFilter struct {
-	filterList *utils.Array
+	filterList *array.Array
 }
 
 func NewFileFilter() *FileFilter {
-	return &FileFilter{utils.NewArray()}
+	return &FileFilter{array.NewArray()}
 }
 
 func (this *FileFilter) AddFilter(filter string) {

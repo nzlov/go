@@ -21,14 +21,14 @@ func Get() *lua.LState {
 	defer m.Unlock()
 	n := len(lstates)
 	if n == 0 {
-		return New()
+		return new()
 	}
 	x := lstates[n-1]
 	lstates = lstates[0 : n-1]
 	return x
 }
 
-func New() *lua.LState {
+func new() *lua.LState {
 	L := lua.NewState()
 	n++
 	return L

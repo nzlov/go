@@ -1,6 +1,9 @@
 package utils
 
 import "reflect"
+import (
+	. "github.com/nzlov/go/array"
+)
 
 type TreeNode struct {
 	parent   *TreeNode
