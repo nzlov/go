@@ -5,15 +5,14 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"errors"
-	"fmt"
 	"strings"
 )
 
 const (
-	number    = "0123456789"
-	lowerCase = "abcdefghijklmnopqrstuvwxyz"
-	upperCase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-	symbol    = "~!@#$%^&*()_+-=/."
+	Number    = "0123456789"
+	LowerCase = "abcdefghijklmnopqrstuvwxyz"
+	UpperCase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	Symbol    = "~!@#$%^&*()_+-=/."
 )
 
 type Key struct {
@@ -90,10 +89,9 @@ func (k *Key) add(index int) {
 }
 
 //匹配字符串生成
-func generate(keyString string, min, max, ckNum int, keyMsg chan string, msg, errOver chan bool) {
+func Generate(keyString string, min, max, ckNum int, keyMsg chan string, errOver chan bool) {
 	key := NewMinMaxKey(keyString, min, max)
 	for {
-		<-msg
 		s := ""
 		for i := 0; i < ckNum; i++ {
 			k, err := key.Generate()
@@ -112,16 +110,16 @@ func generate(keyString string, min, max, ckNum int, keyMsg chan string, msg, er
 }
 
 //检测
-func check(mw string, keyMsg chan string, msg chan bool, over chan string) {
+func Check(mw string, keyMsg chan string, over chan string) {
+	h := md5.New()
+
 	for {
-		msg <- true
 		keys := <-keyMsg
 		key := strings.Split(keys, ";")
 		for _, value := range key {
-			h := md5.New()
+			h.Reset()
 			h.Write([]byte(value)) // 需要加密的字符串为 123456
 			m := hex.EncodeToString(h.Sum(nil))
-			fmt.Println("check:", value)
 			if m == mw {
 				over <- value
 				return
@@ -135,20 +133,19 @@ func check(mw string, keyMsg chan string, msg chan bool, over chan string) {
 // 	t1 := time.Now()
 // 	runtime.GOMAXPROCS(runtime.NumCPU())
 // 	keyString := number + lowerCase          //检测字符表
-// 	mw := "b706835de79a2b4e80506f582af3676a" //需要破解的密文 明文：123654000abc
+// 	mw := "5f74656319f1cd16cd4b36a5b6ef4b02" //需要破解的密文 明文：123654000abc
 // 	num := 10                                //开启线程数
 // 	min := 1                                 //最短位数
 // 	max := 20                                //最长位数
 // 	ckNum := 50                              //每次生成匹配数
 // 	keyMsg := make(chan string)              //传递生成检测key
-// 	msg := make(chan bool)                   //传递需要生成检测key
 // 	over := make(chan string)                //完成
 // 	errOver := make(chan bool)               //未完成
 
-// 	go generate(keyString, min, max, ckNum, keyMsg, msg, errOver)
+// 	go generate(keyString, min, max, ckNum, keyMsg, errOver)
 
 // 	for i := 0; i < num; i++ {
-// 		go check(mw, keyMsg, msg, over)
+// 		go check(mw, keyMsg, over)
 // 	}
 
 // 	select {
